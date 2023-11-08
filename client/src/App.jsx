@@ -11,23 +11,31 @@ function App() {
   const [loggedIn, setLogged] = useState(false)
   const [username, setUsername] = useState(null)
   
-  // to see if there is a auth cookie after the page has loaded or after a reload
+  // to see if there is a auth cookie after the page after a reload
   useEffect(() => {
-    socket.on('connect', () => {
-      console.log('client connected via sockets')
-    })
     fetch('/account/is-authenticated')
+    .then(res => res.json())
     .then(res => {
-      if (res.status === 200) setLogged(true)
+      if (res.status === 200) {
+        setLogged(true)
+        setUsername(res.body.username)
+      }
       else if (res.status === 401) setLogged(false)
-      else res.text().then(message => { throw new Error(message) })
     })
     .catch(err => console.log(err))
   },[])
 
+  useEffect(() => {
+    loggedIn===true?socket.connect():null
+  }, [loggedIn])
+
+  function handleClick() {
+    socket.emit('send message', username)
+  }
+
   return (
     <div>
-      {loggedIn?<Chat username={username} />:<Authentication setLogged={setLogged} setUsername={setUsername}/>}
+      {loggedIn?<Chat username={username} handleClick={handleClick}/>:<Authentication setLogged={setLogged} setUsername={setUsername}/>}
     </div>
   )
 }

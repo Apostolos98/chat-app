@@ -46,8 +46,8 @@ exports.account_signup = async (req, res, next) => {
 
 exports.is_authenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
-    return res.status(200).send()
+    return res.status(200).json({ username: req.user.username })
   } else {
-    return res.status(401).send()
+    return res.status(401).json({ username: 'unathorized' })
   }
 }

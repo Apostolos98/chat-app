@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 
-export default function Chat({ username }) {
+export default function Chat({ username, handleClick }) {
     const [chats, setChats] = useState({})
     const [chat, setChat] = useState(null)
 
@@ -21,10 +21,11 @@ export default function Chat({ username }) {
     }
 
     return (
-        <>
+        <div>
             <Sidebar chats={chats} setChat={setChat} username={username}/>
             <p>welcome to chat</p>
             <p onClick={handleLogOut}>log out</p>
-        </>
+            <p onClick={handleClick}>click</p>
+        </div>
     )
 }

@@ -12,27 +12,6 @@ exports.list_chats = async (req, res, next) => {
     return res.status(200).json({ all_chats: user.chats })    
 }
 
-exports.send_message = async (req, res, next) => {
-    const message = req.body.message.value
-    const chatId = req.params.id
-    try {
-        const chat = await Chat.findOne({ _id: chatId}).exec()
-        if (chat !== null) {
-            const senderId = req.user._id
-            chat.messages.push({ sender: senderId, message: message })
-            await chat.save()
-            return res.status(200).send()
-        }
-        else {
-            throw new Error('chat not found')
-        }
-    }
-    catch (err) {
-        console.log(err)
-        return res.status(500).json({ message: 'error saving to database' })
-    }
-}
-
 exports.new_chat = async (req, res, next) => {
     const message = req.body.message
     const recipientName = req.body.recipient

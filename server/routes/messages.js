@@ -15,7 +15,7 @@ router.get('/chats', ensureAuthentication, messages_controller.list_chats)
 router.post('/chats', ensureAuthentication, messages_controller.new_chat)
 
 // send a message
-router.put('/chats/:id', ensureAuthentication, messages_controller.send_message)
+//router.put('/chats/:id', ensureAuthentication, messages_controller.send_message)
 
 // delete a chat
 router.delete('/chats/:id', ensureAuthentication, messages_controller.delete_chat)

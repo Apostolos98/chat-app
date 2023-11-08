@@ -42,6 +42,7 @@ export default function Authentication({ setLogged, setUsername }) {
             if (res.status < 400) {
                 setLogged(true)
                 setError(null)
+                setUsername(data.username)
             }
             else {
                 setLogged(false)
