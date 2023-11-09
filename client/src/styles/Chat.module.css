@@ -1,0 +1,12 @@
+.cont {
+    display: flex;
+    min-width: 1000px;
+}
+
+.right {
+    text-align: right;
+}
+
+.left {
+text-align: left;
+}

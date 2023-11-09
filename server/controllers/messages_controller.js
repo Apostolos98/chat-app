@@ -5,8 +5,16 @@ exports.list_chats = async (req, res, next) => {
     const user = await User.findOne({ username: req.user.username }).select('chats').populate({
         path: 'chats',
         populate: [
-            {path: 'a_chatter', select: 'username -_id'},
-            {path: 'b_chatter', select: 'username -_id'}
+            {path: 'a_chatter', select: 'username'},
+            {path: 'b_chatter', select: 'username'},
+            {
+                path: 'messages',
+                populate: {
+                    path: 'sender',
+                    model: 'User',
+                    select: 'username'
+                }
+            }
         ]
     }).exec()
     return res.status(200).json({ all_chats: user.chats })    

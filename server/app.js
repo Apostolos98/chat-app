@@ -104,12 +104,16 @@ io.use((socket, next) => {
 
 
 io.on('connection', (socket) => {
+  socket.onAny((event, ...args) => {
+    console.log(event, args);
+  });
+
   socket.on('send message', async (msg, chatId, recId) => {
     const sender = socket.request.user._id
     try {
       let recRoom;
       for (let [id, socket] of io.of("/").sockets) {
-        if (recId === socket.request.user._id) {
+        if (recId === socket.request.user._id.toString()) {
           recRoom = id
         }
       }
@@ -118,7 +122,7 @@ io.on('connection', (socket) => {
       if (chat !== null) {
           chat.messages.push({ sender: sender, message: msg })
           await chat.save()
-          if (recRoom) socket.to(id).emit('recieve message', msg, chatId)
+          if (recRoom) socket.to(recRoom).emit('recieve message', msg, chatId, sender)
       }
       else {
           throw new Error('chat not found')
