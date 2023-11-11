@@ -104,25 +104,47 @@ io.use((socket, next) => {
 
 
 io.on('connection', (socket) => {
+  async function onConnect() {
+    try {
+      const user = await User.findOne({ _id: socket.request.user._id }).select('chats').populate('chats').exec()
+      for (let chat of user.chats) {
+        if (chat.a_chatter._id.toString() === socket.request.user._id.toString()) socket.to(chat.b_chatter._id.toString()).emit('user connected', socket.request.user._id)
+        else socket.to(chat.a_chatter._id.toString()).emit('user connected', socket.request.user._id)
+      }
+    } 
+    catch (err) {
+      console.log(err)
+    }
+  }
+  onConnect()
+
   socket.onAny((event, ...args) => {
     console.log(event, args);
   });
 
+  socket.join(socket.request.user._id.toString())
+
+  socket.on('disconnect', async () => {
+    try {
+      const user = await User.findOne({ _id: socket.request.user._id }).select('chats').populate('chats').exec()
+      for (let chat of user.chats) {
+        if (chat.a_chatter._id.toString() === socket.request.user._id.toString()) socket.to(chat.b_chatter._id.toString()).emit('user disconnected', socket.request.user._id)
+        else socket.to(chat.a_chatter._id.toString()).emit('user disconnected', socket.request.user._id)
+      }
+    } 
+    catch (err) {
+      console.log(err)
+    }
+  })
+
   socket.on('send message', async (msg, chatId, recId) => {
     const sender = socket.request.user._id
     try {
-      let recRoom;
-      for (let [id, socket] of io.of("/").sockets) {
-        if (recId === socket.request.user._id.toString()) {
-          recRoom = id
-        }
-      }
-
       const chat = await Chat.findOne({ $and: [{ _id: chatId }, { $or: [{ a_chatter: sender }, { b_chatter: sender }]}]}).exec()
-      if (chat !== null) {
+      if (chat !== null && (chat.a_chatter._id.toString() === recId || chat.b_chatter._id.toString() === recId)) {
           chat.messages.push({ sender: sender, message: msg })
           await chat.save()
-          if (recRoom) socket.to(recRoom).emit('recieve message', msg, chatId, sender)
+          socket.to(recId).emit('recieve message', msg, chatId, sender)
       }
       else {
           throw new Error('chat not found')

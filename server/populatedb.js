@@ -14,7 +14,8 @@ async function main() {
     console.log('connected to mongodb')
     await users()
     console.log('created users')
-    await createChat()
+    await createChat(userArr[0], userArr[1])
+    await createChat(userArr[2], userArr[0])
     console.log('chat created')
     mongoose.connection.close()
     console.log('disconnected from mongodb')
@@ -24,20 +25,21 @@ function chats() {
 
 }
 
-async function createChat() {
-    const chat = new Chat({ a_chatter: userArr[0]._id, b_chatter: userArr[1]._id, messages: [] })
-    chat.messages.push({sender: userArr[0]._id, message: 'hello'})
-    chat.messages.push({sender: userArr[1]._id, message: 'hello back'})
+async function createChat(user1, user2) {
+    const chat = new Chat({ a_chatter: user1._id, b_chatter: user2._id, messages: [] })
+    chat.messages.push({sender: user1._id, message: 'hello'})
+    chat.messages.push({sender: user2._id, message: 'hello back'})
     await chat.save()
-    userArr[0].chats.push(chat._id)
-    await userArr[0].save()
-    userArr[1].chats.push(chat._id)
-    await userArr[1].save()
+    user1.chats.push(chat._id)
+    await user1.save()
+    user2.chats.push(chat._id)
+    await user2.save()
 }
 
 async function users() {
     await createUser('asd', 'asd')
     await createUser('qwe', 'qwe')
+    await createUser('zxc', 'zxc')
 }
 
 function createUser(pass, name) {

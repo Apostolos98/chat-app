@@ -16,16 +16,30 @@ export default function Chat({ username, socket }) {
 
     useEffect(() => {
         socket.on('recieve message', (msg, chatId, senderId) => {
-            const a = {...chats}
-            for (let chat of a.all_chats) {
-                if (chat._id === chatId) {
-                    chat.messages.push({ sender: senderId, message: msg })
-                    setChats(a)
+            setChats((prevChat => {
+                const placeholder = {...prevChat}
+                for (let chat of placeholder.all_chats) {
+                    if (chat._id === chatId) {
+                        chat.messages.push({ sender: senderId, message: msg })
+                        return placeholder
+                    }
                 }
-            }
+            }))
         });
-        return () => socket.off('recieve message')
-    }, [chats])
+
+        socket.on('user connected', (userId) => {
+            console.log(userId === userId.toString())
+        })
+        socket.on('user disconnected', (userId) => {
+            console.log(userId)
+        })
+
+        return () => {
+            socket.off('recieve message')
+            socket.off('user connected')
+            socket.off('user disconnected')
+        }
+    }, [])
 
     function handleLogOut() {
         fetch('/account/log-out')
