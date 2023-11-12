@@ -6,18 +6,31 @@ export default function Chat({ username, socket }) {
     const [chats, setChats] = useState(null)
     const [chat, setChat] = useState(0)
     const [input, setInput] = useState('')
+    const [firstTime, setFirst] = useState(true)
 
     useEffect(() => {
         fetch('/messages/chats')
         .then((res) => res.json())
-        .then((data) => setChats(data))
+        .then((data) => {
+            for (let chat of data.all_chats) {
+                chat.status = 'offline'
+            }
+            setChats(data)
+        })
         .catch((err) => console.log(err))
     }, [])
 
     useEffect(() => {
+        if (chats !== null && firstTime === true) {
+            setFirst(false)
+            socket.emit('send connected friends')
+        }
+    },[chats])
+
+    useEffect(() => {
         socket.on('recieve message', (msg, chatId, senderId) => {
-            setChats((prevChat => {
-                const placeholder = {...prevChat}
+            setChats((prevChats => {
+                const placeholder = {...prevChats}
                 for (let chat of placeholder.all_chats) {
                     if (chat._id === chatId) {
                         chat.messages.push({ sender: senderId, message: msg })
@@ -27,11 +40,40 @@ export default function Chat({ username, socket }) {
             }))
         });
 
+        socket.on('connected friends', (connectedFriends) => {
+            setChats((prevChats => {
+                const placeholder = {...prevChats}
+                console.log(prevChats)
+                for (let chat of placeholder.all_chats) {
+                    if (connectedFriends.includes(chat._id)) {
+                        chat.status = 'online'
+                    }
+                }
+                return placeholder
+            }))
+        })
+
         socket.on('user connected', (userId) => {
-            console.log(userId === userId.toString())
+            setChats((prevChats) => {
+                const placeholder = {...prevChats}
+                for (let chat of placeholder.all_chats) {
+                    if (chat.a_chatter._id === userId || chat.b_chatter._id === userId) {
+                        chat.status = 'online'
+                        return placeholder
+                    }
+                }
+            })
         })
         socket.on('user disconnected', (userId) => {
-            console.log(userId)
+            setChats((prevChats) => {
+                const placeholder = {...prevChats}
+                for (let chat of placeholder.all_chats) {
+                    if (chat.a_chatter._id === userId || chat.b_chatter._id === userId) {
+                        chat.status = 'offline'
+                        return placeholder
+                    }
+                }
+            })
         })
 
         return () => {

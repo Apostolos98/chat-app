@@ -15,9 +15,11 @@ const Chat = require("./models/chat")
 const indexRouter = require("./routes/index")
 const accountRouter = require("./routes/account")
 const messagesRouter = require("./routes/messages")
+const allConnectedIds = []
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
+const user = require("./models/user")
 mongoose.set("strictQuery", false);
 
 connectDB().catch((err) => console.error('Error:', err));
@@ -104,13 +106,19 @@ io.use((socket, next) => {
 
 
 io.on('connection', (socket) => {
+  const socketStringId = socket.request.user._id.toString()
+  socket.join(socketStringId)
+
   async function onConnect() {
+    // transmiting the user as a connected user to his friends
+    let user;
     try {
-      const user = await User.findOne({ _id: socket.request.user._id }).select('chats').populate('chats').exec()
+      user = await User.findOne({ _id: socket.request.user._id }).select('chats').populate('chats').exec()
       for (let chat of user.chats) {
-        if (chat.a_chatter._id.toString() === socket.request.user._id.toString()) socket.to(chat.b_chatter._id.toString()).emit('user connected', socket.request.user._id)
+        if (chat.a_chatter._id.toString() === socketStringId) socket.to(chat.b_chatter._id.toString()).emit('user connected', socket.request.user._id)
         else socket.to(chat.a_chatter._id.toString()).emit('user connected', socket.request.user._id)
       }
+      allConnectedIds.push(user._id.toString())
     } 
     catch (err) {
       console.log(err)
@@ -122,15 +130,27 @@ io.on('connection', (socket) => {
     console.log(event, args);
   });
 
-  socket.join(socket.request.user._id.toString())
+  socket.on('send connected friends', async () => {
+    const connectedFriends = []
+    const user = await User.findOne({ _id: socketStringId }).select('chats').populate('chats').exec()
+    for (let chat of user.chats) {
+      const a_chatterString = chat.a_chatter._id.toString()
+      const b_chatterString = chat.b_chatter._id.toString()
+      // server sends the id of chat as a way to show that the friend in the chat is online for conveniance iterating on client
+      if (allConnectedIds.includes(a_chatterString) && a_chatterString !== socketStringId) connectedFriends.push(chat._id)
+      else if (allConnectedIds.includes(b_chatterString) && b_chatterString !== socketStringId) connectedFriends.push(chat._id)
+    }
+    socket.emit('connected friends', connectedFriends)
+  })
 
   socket.on('disconnect', async () => {
     try {
       const user = await User.findOne({ _id: socket.request.user._id }).select('chats').populate('chats').exec()
       for (let chat of user.chats) {
-        if (chat.a_chatter._id.toString() === socket.request.user._id.toString()) socket.to(chat.b_chatter._id.toString()).emit('user disconnected', socket.request.user._id)
+        if (chat.a_chatter._id.toString() === socketStringId) socket.to(chat.b_chatter._id.toString()).emit('user disconnected', socket.request.user._id)
         else socket.to(chat.a_chatter._id.toString()).emit('user disconnected', socket.request.user._id)
       }
+      allConnectedIds.splice(allConnectedIds.indexOf(user._id.toString()), 1) // deleting user from connected list
     } 
     catch (err) {
       console.log(err)
