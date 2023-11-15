@@ -1,12 +1,56 @@
 .cont {
     display: flex;
-    min-width: 1000px;
+}
+
+.chatCont {
+    background-color: rgb(230, 230, 230);
 }
 
 .right {
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-bottom: 20px
 }
 
 .left {
-text-align: left;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 20px
+}
+
+.rightP {
+    padding: 20px;
+    display: inline-block;
+    color: white;
+    background: linear-gradient(0deg, rgb(68, 0, 128), rgb(0, 64, 255));
+    border-radius: 30px;
+    max-width: 50%;
+}
+
+.leftP {
+    padding: 20px;
+    display: inline-block;
+    background-color: rgb(165, 165, 165);
+    border-radius: 30px;
+    max-width: 50%;
+}
+
+form > input:focus {
+    outline: none;
+}
+
+form > input {
+    border-radius: 20px;
+    width: 100%;
+    padding-left: 10px;
+}
+
+form {
+    display: flex;
+}
+
+form > button {
+    border: none;
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
+import send from "../assets/send.svg"
 import styles from "../styles/Chat.module.css"
 
 export default function Chat({ username, socket }) {
@@ -43,7 +44,6 @@ export default function Chat({ username, socket }) {
         socket.on('connected friends', (connectedFriends) => {
             setChats((prevChats => {
                 const placeholder = {...prevChats}
-                console.log(prevChats)
                 for (let chat of placeholder.all_chats) {
                     if (connectedFriends.includes(chat._id)) {
                         chat.status = 'online'
@@ -113,20 +113,21 @@ export default function Chat({ username, socket }) {
     return (
         <div className={styles.cont}>
             <Sidebar chats={chats} setChat={setChat} username={username}/>
-            <div>
+            <div className={styles.chatCont}>
                 <p>welcome to chat</p>
                 <p onClick={handleLogOut}>log out</p>
+                {chats ? <p>{chats.all_chats[chat].a_chatter.username === username? chats.all_chats[chat].b_chatter.username : chats.all_chats[chat].a_chatter.username}</p> : null}
                 {chats === null ? null : 
                     <div>
                         {chats.all_chats[chat].messages.map((el) => {
-                             if (el.sender.username === username) return <p className={styles.right}>{el.message}</p>
-                             else return <p className={styles.left}>{el.message}</p>
+                             if (el.sender.username === username) return <div className={styles.right}><p className={styles.rightP}>{el.message}</p></div>
+                             else return <div className={styles.left}><p className={styles.leftP}>{el.message}</p></div>
                         })}
                     </div>
                 }
                 <form onSubmit={handleSubmit}>
                     <input type="text" name="msg" value={input} onChange={(e) => setInput(e.target.value)}/>
-                    <input type="submit" value="submit"/>
+                    <button type="submit"><img src={send} alt="" width={32}/></button>
                 </form>
             </div>
         </div>
