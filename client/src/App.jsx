@@ -35,9 +35,9 @@ function App() {
   }, [loggedIn])
 
   return (
-    <div>
+    <>
       {loggedIn?<Chat username={username} socket={socket}/>:<Authentication setLogged={setLogged} setUsername={setUsername}/>}
-    </div>
+    </>
   )
 }
 

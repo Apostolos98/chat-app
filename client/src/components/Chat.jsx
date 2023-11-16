@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Sidebar from "./Sidebar";
 import send from "../assets/send.svg"
 import styles from "../styles/Chat.module.css"
@@ -8,6 +8,7 @@ export default function Chat({ username, socket }) {
     const [chat, setChat] = useState(0)
     const [input, setInput] = useState('')
     const [firstTime, setFirst] = useState(true)
+    const chatDiv = useRef();
 
     useEffect(() => {
         fetch('/messages/chats')
@@ -26,6 +27,7 @@ export default function Chat({ username, socket }) {
             setFirst(false)
             socket.emit('send connected friends')
         }
+        if (chatDiv.current) chatDiv.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
     },[chats])
 
     useEffect(() => {
@@ -107,28 +109,37 @@ export default function Chat({ username, socket }) {
         a.all_chats[chat].messages.push({ sender: {_id: senderId, username: username }, message: e.target.msg.value})
         setChats(a)
         setInput('')
-        
     }
 
     return (
         <div className={styles.cont}>
-            <Sidebar chats={chats} setChat={setChat} username={username}/>
-            <div className={styles.chatCont}>
-                <p>welcome to chat</p>
-                <p onClick={handleLogOut}>log out</p>
-                {chats ? <p>{chats.all_chats[chat].a_chatter.username === username? chats.all_chats[chat].b_chatter.username : chats.all_chats[chat].a_chatter.username}</p> : null}
-                {chats === null ? null : 
-                    <div>
-                        {chats.all_chats[chat].messages.map((el) => {
-                             if (el.sender.username === username) return <div className={styles.right}><p className={styles.rightP}>{el.message}</p></div>
-                             else return <div className={styles.left}><p className={styles.leftP}>{el.message}</p></div>
-                        })}
+            <div className={styles.topBar}>
+                <p className={styles.title}>ProjectChat</p>
+                <p onClick={handleLogOut} className={styles.logOut}>Log out</p>
+            </div>
+            <div className={styles.sidebarChat}>
+                <Sidebar chats={chats} setChat={setChat} username={username}/>
+                <div className={styles.chatCont}>
+                    <div className={styles.header}>
+                        {chats ? <p>{chats.all_chats[chat].a_chatter.username === username ? chats.all_chats[chat].b_chatter.username : chats.all_chats[chat].a_chatter.username}</p> : null}
                     </div>
-                }
-                <form onSubmit={handleSubmit}>
-                    <input type="text" name="msg" value={input} onChange={(e) => setInput(e.target.value)}/>
-                    <button type="submit"><img src={send} alt="" width={32}/></button>
-                </form>
+                    <div className={styles.chatMain}>
+                        <div className={styles.chatMessages}>
+                            {chats === null ? null : 
+                                <div ref={chatDiv}>
+                                    {chats.all_chats[chat].messages.map((el) => {
+                                        if (el.sender.username === username) return <div className={styles.right}><p className={styles.rightP}>{el.message}</p></div>
+                                        else return <div className={styles.left}><p className={styles.leftP}>{el.message}</p></div>
+                                    })}
+                                </div>
+                            }
+                        </div>
+                        <form onSubmit={handleSubmit}>
+                            <input type="text" name="msg" value={input} onChange={(e) => setInput(e.target.value)} placeholder="type a message"/>
+                            <button type="submit"><img src={send} alt="" width={32}/></button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     )

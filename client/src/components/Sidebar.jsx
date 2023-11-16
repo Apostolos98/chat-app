@@ -9,7 +9,7 @@ export default function Sidebar({ chats, setChat, username }) {
             <div className={styles.search}>
                 <form>
                     <button type='submit'><img src={search} alt="" width={16}/></button>
-                    <input type="text" name="search" className={styles.inSearch} placeholder='search for people'/>
+                    <input type="text" name="search" className={styles.inSearch} placeholder='search for people' autoComplete='off'/>
                 </form>
             </div>
             <div className={styles.peopleCont}>
