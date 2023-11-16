@@ -30,7 +30,7 @@ exports.new_chat = async (req, res, next) => {
         if (!message || !recipientName) throw new Error('missing request data')
         senderId = req.user._id
         recipient = await User.findOne({ username: recipientName }).exec()
-        if (recipient === null) return res.status(404).json({ message: 'sender or recipient not found'})
+        if (recipient === null || recipientName === req.user.username) return res.status(404).json({ message: 'sender or recipient not found'})
     }
     catch (err) {
         return res.status(404).json({ message: 'sender or recipient not found'})
@@ -57,9 +57,27 @@ exports.new_chat = async (req, res, next) => {
             messages: [{sender: senderId, message: message}]
         })
         await newChat.save()
-        return res.status(201).send()
+        user.chats.push(newChat._id)
+        await user.save()
+        recipient.chats.push(newChat._id)
+        await recipient.save()
+        // populating in order to send to the client
+        await newChat.populate([
+            {path: 'a_chatter', select: 'username'},
+            {path: 'b_chatter', select: 'username'},
+            {
+                path: 'messages',
+                populate: {
+                    path: 'sender',
+                    model: 'User',
+                    select: 'username'
+                }
+            }
+        ])
+        return res.status(201).json(newChat)
     }
     catch (err) {
+        console.log(err)
         return res.status(500).json({ message: 'could not save to db'})
     }
 }
@@ -75,7 +93,7 @@ exports.delete_chat = async (req, res, next) => {
     }
 }
 
-exports.search_chatter = async (req, res, next) => {
-    const chatters = await User.find({ username: { $regex: `^${req.body.username}`, $options: 'i' }}).select('username -_id').exec();
+exports.search_users = async (req, res, next) => {
+    const chatters = await User.find({ username: { $regex: `^${req.query.search}`, $options: 'i' }}).select('username -_id').exec();
     chatters.length > 0 ? res.status(200).json({ chatters: chatters }) : res.status(404).send()   
 }

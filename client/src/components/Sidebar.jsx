@@ -1,17 +1,12 @@
 import styles from '../styles/Sidebar.module.css'
-import search from '../assets/search.svg'
 import profile from '../assets/profile.svg'
+import SearchPeople from './SearchPeople'
 
-export default function Sidebar({ chats, setChat, username }) {
+export default function Sidebar({ chats, setChat, username, setChats }) {
 
     return (
         <div className={styles.cont}>
-            <div className={styles.search}>
-                <form>
-                    <button type='submit'><img src={search} alt="" width={16}/></button>
-                    <input type="text" name="search" className={styles.inSearch} placeholder='search for people' autoComplete='off'/>
-                </form>
-            </div>
+            <SearchPeople chats={chats} setChat={setChat} setChats={setChats} username={username}/>
             <div className={styles.peopleCont}>
                 {chats !== null ? chats.all_chats.map((chat, index) => {
                     return  <div onClick={() => setChat(index)} className={styles.personCont}>
@@ -23,7 +18,7 @@ export default function Sidebar({ chats, setChat, username }) {
                                     <p className={styles.username}>
                                         {chat.a_chatter.username !== username ? chat.a_chatter.username : chat.b_chatter.username}
                                     </p>
-                                    <p className={styles.lastMessage}>{chat.messages[chat.messages.length - 1].message}</p>
+                                    <p className={styles.lastMessage}>{chat.messages.length !== 0 ? chat.messages[chat.messages.length - 1].message : null}</p>
                                 </div>
                             </div>
                 }): null}

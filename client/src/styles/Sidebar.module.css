@@ -40,34 +40,6 @@ p {
     bottom: 5px;
 }
 
-.search {
-    background-color: rgb(207, 207, 207);
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.inSearch {
-    background-color: inherit;
-    border: none;
-    width: 100%;
-}
-
-.inSearch:focus {
-    outline: none;
-}
-
-form  img {
-    background-color: inherit;
-}
-form > button {
-    background-color: inherit;
-    border: none;
-}
-
-form {
-    display: flex;
-}
-
 .personCont {
     display: flex;
     margin-top: 20px;

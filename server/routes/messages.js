@@ -21,7 +21,7 @@ router.post('/chats', ensureAuthentication, messages_controller.new_chat)
 router.delete('/chats/:id', ensureAuthentication, messages_controller.delete_chat)
 
 // search chatters
-router.get('/search-chat', ensureAuthentication, messages_controller.search_chatter)
+router.get('/search-users', ensureAuthentication, messages_controller.search_users)
 
 //router.get('/group-chats')
 

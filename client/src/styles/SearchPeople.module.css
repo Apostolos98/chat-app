@@ -1,0 +1,44 @@
+.search {
+    background-color: rgb(207, 207, 207);
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.inSearch {
+    background-color: inherit;
+    border: none;
+    width: 100%;
+}
+
+.inSearch:focus {
+    outline: none;
+}
+
+form  img {
+    background-color: inherit;
+}
+form > button {
+    background-color: inherit;
+    border: none;
+}
+
+form {
+    display: flex;
+}
+
+.results {
+    position: absolute;
+    top: 30px;
+    left: 0;
+    padding: 10px;
+    width: -webkit-fill-available;
+    width: -moz-available;
+    background-color: rgb(207, 207, 207);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.hide {
+    display: none;
+}

@@ -95,20 +95,46 @@ export default function Chat({ username, socket }) {
 
     function handleSubmit(e) {
         e.preventDefault();
-        let recId, senderId;
-        if (chats.all_chats[chat].a_chatter.username === username) {
-            senderId = chats.all_chats[chat].a_chatter._id
-            recId = chats.all_chats[chat].b_chatter._id
+        if (chats.all_chats[chat].temp) {
+            fetch('/messages/chats', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    recipient: chats.all_chats[chat].a_chatter.username,
+                    message: e.target.msg.value
+                })
+            })
+            .then(res => {
+                if (res.status === 409 || res.status === 404 || res.status === 500) throw new Error('error completing operation')
+                else return res.json()
+            })
+            .then((chat) => {
+                const temp = {...chats}
+                temp.all_chats[temp.all_chats.length - 1] = chat
+                temp.all_chats[temp.all_chats.length - 1].status = 'offline'
+                setChats(temp)
+                setInput('')
+            })
+            .catch((err) => console.log(err))
         }
-        else if (chats.all_chats[chat].b_chatter.username === username) {
-            senderId = chats.all_chats[chat].b_chatter._id
-            recId = chats.all_chats[chat].a_chatter._id
+        else {
+            let recId, senderId;
+            if (chats.all_chats[chat].a_chatter.username === username) {
+                senderId = chats.all_chats[chat].a_chatter._id
+                recId = chats.all_chats[chat].b_chatter._id
+            }
+            else if (chats.all_chats[chat].b_chatter.username === username) {
+                senderId = chats.all_chats[chat].b_chatter._id
+                recId = chats.all_chats[chat].a_chatter._id
+            }
+            socket.emit('send message', e.target.msg.value, chats.all_chats[chat]._id, recId)
+            const a = {...chats}
+            a.all_chats[chat].messages.push({ sender: {_id: senderId, username: username }, message: e.target.msg.value})
+            setChats(a)
+            setInput('')
         }
-        socket.emit('send message', e.target.msg.value, chats.all_chats[chat]._id, recId)
-        const a = {...chats}
-        a.all_chats[chat].messages.push({ sender: {_id: senderId, username: username }, message: e.target.msg.value})
-        setChats(a)
-        setInput('')
     }
 
     return (
@@ -118,7 +144,7 @@ export default function Chat({ username, socket }) {
                 <p onClick={handleLogOut} className={styles.logOut}>Log out</p>
             </div>
             <div className={styles.sidebarChat}>
-                <Sidebar chats={chats} setChat={setChat} username={username}/>
+                <Sidebar chats={chats} setChat={setChat} username={username} setChats={setChats}/>
                 <div className={styles.chatCont}>
                     <div className={styles.header}>
                         {chats ? <p>{chats.all_chats[chat].a_chatter.username === username ? chats.all_chats[chat].b_chatter.username : chats.all_chats[chat].a_chatter.username}</p> : null}
