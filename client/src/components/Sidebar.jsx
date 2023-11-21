@@ -3,7 +3,6 @@ import profile from '../assets/profile.svg'
 import SearchPeople from './SearchPeople'
 
 export default function Sidebar({ chats, setChat, username, setChats }) {
-
     return (
         <div className={styles.cont}>
             <SearchPeople chats={chats} setChat={setChat} setChats={setChats} username={username}/>
@@ -18,8 +17,15 @@ export default function Sidebar({ chats, setChat, username, setChats }) {
                                     <p className={styles.username}>
                                         {chat.a_chatter.username !== username ? chat.a_chatter.username : chat.b_chatter.username}
                                     </p>
-                                    <p className={styles.lastMessage}>{chat.messages.length !== 0 ? chat.messages[chat.messages.length - 1].message : null}</p>
+                                    <p className={ chat.a_chatter.username === username ? 
+                                         chat.a_chatter_read_index < chat.messages.length - 1 ? `${styles.lastMessage} ${styles.bold}` : styles.lastMessage
+                                         : chat.b_chatter_read_index < chat.messages.length - 1 ? `${styles.lastMessage} ${styles.bold}` : styles.lastMessage}>
+                                        {chat.messages.length !== 0 ? chat.messages[chat.messages.length - 1].message : null}
+                                    </p>
                                 </div>
+                                { chat.a_chatter.username === username ? 
+                                    chat.a_chatter_read_index < chat.messages.length - 1 ? <p className={styles.unreadNum}>{chat.messages.length - 1 - chat.a_chatter_read_index}</p> : null
+                                    : chat.b_chatter_read_index < chat.messages.length - 1 ? <p className={styles.unreadNum}>{chat.messages.length - 1 - chat.b_chatter_read_index}</p> : null}
                             </div>
                 }): null}
             </div>

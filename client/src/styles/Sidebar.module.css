@@ -43,6 +43,8 @@ p {
 .personCont {
     display: flex;
     margin-top: 20px;
+    position: relative;
+    cursor: pointer;
 }
 
 .pictureCont {
@@ -65,4 +67,22 @@ p {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.unreadNum {
+    background-color: blue;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: bold;
+    max-height: 17px;
+    padding: 4px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    position: absolute;
+    right: 0;
 }

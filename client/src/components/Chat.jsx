@@ -142,7 +142,7 @@ export default function Chat({ username, socket }) {
             if (chats.all_chats[chat].a_chatter.username === username) {
                 if (chats.all_chats[chat].a_chatter_read_index < chats.all_chats[chat].messages.length - 1) {
                     const temp = {...chats}
-                    temp.all_chats[chat].a_chatter_read_index === chats.all_chats[chat].messages.length - 1
+                    temp.all_chats[chat].a_chatter_read_index = chats.all_chats[chat].messages.length - 1
                     setChats(temp)
                     socket.emit('message read', temp.all_chats[chat]._id, chats.all_chats[chat].b_chatter._id)
                 }
@@ -150,7 +150,7 @@ export default function Chat({ username, socket }) {
             else {
                 if (chats.all_chats[chat].b_chatter_read_index < chats.all_chats[chat].messages.length - 1) {
                     const temp = {...chats}
-                    temp.all_chats[chat].b_chatter_read_index === chats.all_chats[chat].messages.length - 1
+                    temp.all_chats[chat].b_chatter_read_index = chats.all_chats[chat].messages.length - 1
                     setChats(temp)
                     socket.emit('message read', temp.all_chats[chat]._id, chats.all_chats[chat].a_chatter._id)
                 }
@@ -196,15 +196,17 @@ export default function Chat({ username, socket }) {
         }
         else {
             let recId, senderId;
+            const a = {...chats}
             if (chats.all_chats[chat].a_chatter.username === username) {
                 senderId = chats.all_chats[chat].a_chatter._id
                 recId = chats.all_chats[chat].b_chatter._id
+                a.all_chats[chat].a_chatter_read_index = a.all_chats[chat].messages.length // not -1 since we assign before we push the new message
             }
             else if (chats.all_chats[chat].b_chatter.username === username) {
                 senderId = chats.all_chats[chat].b_chatter._id
                 recId = chats.all_chats[chat].a_chatter._id
+                a.all_chats[chat].b_chatter_read_index = a.all_chats[chat].messages.length
             }
-            const a = {...chats}
             a.all_chats[chat].messages.push({ sender: {_id: senderId, username: username }, message: e.target.msg.value})
             a.all_chats[chat].saved = 'pending'
             socket.emit('send message', e.target.msg.value, chats.all_chats[chat]._id, recId, chat, (err, saved, chatInd) => {

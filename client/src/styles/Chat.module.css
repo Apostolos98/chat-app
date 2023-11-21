@@ -120,4 +120,5 @@ form {
 
 form > button {
     border: none;
+    cursor: pointer;
 }
