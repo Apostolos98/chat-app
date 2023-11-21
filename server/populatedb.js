@@ -29,6 +29,8 @@ async function createChat(user1, user2) {
     const chat = new Chat({ a_chatter: user1._id, b_chatter: user2._id, messages: [] })
     chat.messages.push({sender: user1._id, message: 'hello'})
     chat.messages.push({sender: user2._id, message: 'hello back'})
+    chat.a_chatter_read_index = 1
+    chat.b_chatter_read_index = 1
     await chat.save()
     user1.chats.push(chat._id)
     await user1.save()

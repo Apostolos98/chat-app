@@ -8,7 +8,9 @@ const ChatScehma = new Schema({
         sender: {type: Schema.Types.ObjectId, ref: 'User'},
         message: {type: String, required: true},
         _id: false
-    }]
+    }],
+    a_chatter_read_index: { type: Number },
+    b_chatter_read_index: { type: Number }
 })
 
 module.exports = mongoose.model('Chat', ChatScehma)

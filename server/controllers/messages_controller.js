@@ -54,7 +54,9 @@ exports.new_chat = async (req, res, next) => {
         const newChat = new Chat({
             a_chatter: senderId,
             b_chatter: recipient._id,
-            messages: [{sender: senderId, message: message}]
+            messages: [{sender: senderId, message: message}],
+            a_chatter_read_index: 0,
+            b_chatter_read_index: -1,
         })
         await newChat.save()
         user.chats.push(newChat._id)

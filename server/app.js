@@ -20,6 +20,7 @@ const allConnectedIds = []
 // Set up mongoose connection
 const mongoose = require("mongoose");
 const user = require("./models/user")
+const chat = require("./models/chat")
 mongoose.set("strictQuery", false);
 
 connectDB().catch((err) => console.error('Error:', err));
@@ -157,14 +158,22 @@ io.on('connection', (socket) => {
     }
   })
 
-  socket.on('send message', async (msg, chatId, recId) => {
+  socket.on('send message', async (msg, chatId, recId, chatInd, callback) => {
     const sender = socket.request.user._id
     try {
       const chat = await Chat.findOne({ $and: [{ _id: chatId }, { $or: [{ a_chatter: sender }, { b_chatter: sender }]}]}).exec()
       if (chat !== null && (chat.a_chatter._id.toString() === recId || chat.b_chatter._id.toString() === recId)) {
           chat.messages.push({ sender: sender, message: msg })
+          if (chat.a_chatter._id === sender) {
+            chat.a_chatter_read_index = chat.messages.length - 1
+          }
+          else {
+            chat.b_chatter_read_index = chat.messages.length - 1
+          }
           await chat.save()
           socket.to(recId).emit('recieve message', msg, chatId, sender)
+          socket.to(socketStringId).emit('message saved')
+          callback(null, true, chatInd)
       }
       else {
           throw new Error('chat not found')
@@ -172,7 +181,24 @@ io.on('connection', (socket) => {
     }
     catch (err) {
         console.log(err)
-        socket.to(sender).emit('error', err.message)
+        callback(true, false, chatInd)
+    }
+  })
+
+  socket.on('message read', async (chatId, senderId) => {
+    try {
+      const chat = await Chat.findOne({ _id: chatId })
+      if (chat.a_chatter._id.toString() === socket.request.user._id.toString()) {
+        chat.a_chatter_read_index = chat.messages.length - 1
+      }
+      else {
+        chat.b_chatter_read_index = chat.messages.length - 1
+      }
+      await chat.save()
+      socket.to(senderId).emit('friend read message', chatId)
+    }
+    catch (err) {
+      console.log(err)
     }
   })
 });
