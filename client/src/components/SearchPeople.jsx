@@ -42,7 +42,7 @@ export default function SearchPeople ({ chats, setChats, setChat, username}) {
 
     return (
         <div className={styles.search}>
-            <form>
+            <form className={styles.searchForm}>
                 <button type='submit'><img src={search} alt="" width={16}/></button>
                 <input type="text" name="search" className={styles.inSearch} placeholder='search for people' autoComplete='off' onKeyUp={handleKeyUp}/>
             </form>

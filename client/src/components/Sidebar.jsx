@@ -7,7 +7,7 @@ export default function Sidebar({ chats, setChat, username, setChats }) {
         <div className={styles.cont}>
             <SearchPeople chats={chats} setChat={setChat} setChats={setChats} username={username}/>
             <div className={styles.peopleCont}>
-                {chats !== null ? chats.all_chats.map((chat, index) => {
+                {chats !== null  && chats.all_chats.length !== 0 ? chats.all_chats.map((chat, index) => {
                     return  <div onClick={() => setChat(index)} className={styles.personCont}>
                                 <div className={styles.pictureCont}>
                                     <img src={profile} alt="profile or default picture" width={32} className={styles.profile}/>

@@ -3,6 +3,7 @@
     padding: 10px;
     border-radius: 10px;
     position: relative;
+    z-index: 100;
 }
 
 .inSearch {
@@ -15,15 +16,15 @@
     outline: none;
 }
 
-form  img {
+.searchForm  img {
     background-color: inherit;
 }
-form > button {
+.searchForm > button {
     background-color: inherit;
     border: none;
 }
 
-form {
+.searchForm {
     display: flex;
 }
 

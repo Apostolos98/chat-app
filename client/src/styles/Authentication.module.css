@@ -1,0 +1,82 @@
+.cont {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: rgb(244, 244, 244);
+    background-image: linear-gradient(225deg, rgb(50, 218, 255), 40%, rgb(176, 0, 164));
+    position: relative;
+    color: #001275;
+}
+
+.fieldCont {
+    display: flex;
+    flex-direction: column;
+}
+
+.formCont {
+    border-radius: 10px;
+    padding: 50px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    row-gap: 30px;
+}
+
+.forms {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+    justify-content: center;
+    align-items: center;
+}
+
+.imgInpCont {
+    border-bottom: 1px solid gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.inpClass {
+    width: 250px;
+    height: 25px;
+    padding-left: 10px;
+    border: none;
+    color: #001275;
+}
+
+.submit {
+    background-color: rgb(0, 149, 255);
+    color: white;
+    border-radius: 10px;
+    height: 25px;
+    width: 250px;
+    border: none;
+}
+
+.submit:focus {
+    outline: none;
+}
+
+.imgInpCont > input:focus {
+    outline: none;
+}
+
+.action {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.error {
+    font-style: italic;
+    color: rgb(255, 41, 41);
+}

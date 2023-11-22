@@ -272,11 +272,13 @@ export default function Chat({ username, socket }) {
                 <Sidebar chats={chats} setChat={setChat} username={username} setChats={setChats}/>
                 <div className={styles.chatCont}>
                     <div className={styles.header}>
-                        {chats ? <p>{chats.all_chats[chat].a_chatter.username === username ? chats.all_chats[chat].b_chatter.username : chats.all_chats[chat].a_chatter.username}</p> : null}
+                        {chats && chats.all_chats.length !== 0 ? 
+                        <p>{chats.all_chats[chat].a_chatter.username === username ? chats.all_chats[chat].b_chatter.username : chats.all_chats[chat].a_chatter.username}</p> 
+                        : null}
                     </div>
                     <div className={styles.chatMain}>
                         <div className={styles.chatMessages}>
-                            {chats === null ? null : 
+                            {chats === null || chats.all_chats.length === 0? null : 
                                 <div ref={chatDiv}>
                                     {chats.all_chats[chat].messages.map((el, ind) => {
                                         if (el.sender.username === username) return ( 
@@ -293,7 +295,7 @@ export default function Chat({ username, socket }) {
                                 </div>
                             }
                         </div>
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={handleSubmit} className={styles.chatForm}>
                             <input type="text" name="msg" value={input} onChange={(e) => setInput(e.target.value)} placeholder="type a message"/>
                             <button type="submit"><img src={send} alt="" width={32}/></button>
                         </form>

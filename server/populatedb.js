@@ -39,9 +39,9 @@ async function createChat(user1, user2) {
 }
 
 async function users() {
-    await createUser('asd', 'asd')
-    await createUser('qwe', 'qwe')
-    await createUser('zxc', 'zxc')
+    await createUser('Asdasd12', 'asd')
+    await createUser('Asdasd12', 'qwe')
+    await createUser('Asdasd12', 'zxc')
 }
 
 function createUser(pass, name) {
