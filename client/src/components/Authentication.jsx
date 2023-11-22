@@ -9,7 +9,7 @@ export default function Authentication({ setLogged, setUsername }) {
 
     function handleSignUp(e) {
         e.preventDefault()
-        const data = {username: e.target.username.value, password: e.target.password.value}
+        const data = {username: e.target.username.value, password: e.target.password.value, confirmPass: e.target.confirmPassword.value}
         fetch('/account/sign-up', {
             method: 'POST',
             headers: {
@@ -79,7 +79,7 @@ export default function Authentication({ setLogged, setUsername }) {
                                 <input type="password" name="password" className={styles.inpClass} pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$" 
                                 title="Password should be at least 8 characters long and must contain at least one lowercase letter, 
                                 one uppercase letter, and one numeric digit."
-                                required placeholder="Type in your password" />
+                                required placeholder="Type in your password" id="passwordS"/>
                             </div>
                         </div>
                         <div className={styles.fieldCont}>

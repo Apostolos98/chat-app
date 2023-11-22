@@ -19,8 +19,6 @@ const allConnectedIds = []
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
-const user = require("./models/user")
-const chat = require("./models/chat")
 mongoose.set("strictQuery", false);
 
 connectDB().catch((err) => console.error('Error:', err));
