@@ -8,22 +8,24 @@ router.post('/sign-up', [
     check('username').escape(),
     check('password').escape(),
     check('confirmPass').escape()
-], (req, res) => {
+], (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    next()
 } 
 , account_controller.account_signup)
 
 router.post('/log-in', [
     check('username').escape(),
     check('password').escape()
-], (req, res) => {
+], (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    next()
 }, account_controller.account_login)
 
 router.get('/log-out', account_controller.account_logout)

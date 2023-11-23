@@ -162,7 +162,7 @@ io.on('connection', (socket) => {
       const chat = await Chat.findOne({ $and: [{ _id: chatId }, { $or: [{ a_chatter: sender }, { b_chatter: sender }]}]}).exec()
       if (chat !== null && (chat.a_chatter._id.toString() === recId || chat.b_chatter._id.toString() === recId)) {
           chat.messages.push({ sender: sender, message: msg })
-          if (chat.a_chatter._id === sender) {
+          if (socketStringId === chat.a_chatter._id.toString()) {
             chat.a_chatter_read_index = chat.messages.length - 1
           }
           else {

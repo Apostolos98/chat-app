@@ -10,6 +10,18 @@ import './styles/App.css'
 function App() {
   const [loggedIn, setLogged] = useState(false)
   const [username, setUsername] = useState(null)
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 750);
+
+  // Add a listener for window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 750)
+    }
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   
   // to see if there is a auth cookie after the page after a reload
   useEffect(() => {
@@ -36,7 +48,7 @@ function App() {
 
   return (
     <>
-      {loggedIn?<Chat username={username} socket={socket}/>:<Authentication setLogged={setLogged} setUsername={setUsername}/>}
+      {loggedIn?<Chat username={username} socket={socket} isMobile={isMobile}/>:<Authentication setLogged={setLogged} setUsername={setUsername}/>}
     </>
   )
 }

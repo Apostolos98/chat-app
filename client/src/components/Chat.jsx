@@ -6,7 +6,7 @@ import profile from '../assets/profile.svg'
 import saved from '../assets/saved.svg'
 import { produce } from 'immer'
 
-export default function Chat({ username, socket }) {
+export default function Chat({ username, socket, isMobile }) {
     const [chats, setChats] = useState(null)
     const [chat, setChat] = useState(0)
     const [input, setInput] = useState('')
@@ -189,6 +189,7 @@ export default function Chat({ username, socket }) {
                 const temp = {...chats}
                 temp.all_chats[temp.all_chats.length - 1] = chat
                 temp.all_chats[temp.all_chats.length - 1].status = 'offline'
+                temp.all_chats[temp.all_chats.length - 1].saved = 'ok'
                 setChats(temp)
                 setInput('')
             })

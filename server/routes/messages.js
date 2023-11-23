@@ -16,33 +16,36 @@ router.get('/chats', ensureAuthentication, messages_controller.list_chats)
 router.post('/chats', [
   check('message').escape(),
   check('recipient').escape(),
-  (req, res) => {
+  (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    next()
   }
 ], ensureAuthentication, messages_controller.new_chat)
 
 // delete a chat
 router.delete('/chats/:id', [
   check('id').escape(),
-  (req, res) => {
+  (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    next()
   }
 ], ensureAuthentication, messages_controller.delete_chat)
 
 // search chatters
 router.get('/search-users', [
   check('search').escape(),
-  (req, res) => {
+  (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
+    next()
   }
 ], ensureAuthentication, messages_controller.search_users)
 
