@@ -6,8 +6,9 @@ import { produce } from 'immer'
 
 export default function Chat({ username, socket, isMobile }) {
     const [chats, setChats] = useState(null)
-    const [chat, setChat] = useState(0)
+    const [chat, setChat] = useState(isMobile ? null : 0)
     const [page, setPage] = useState(0) // for mobile
+    const [firstTime, setFirst] = useState(true)
     const chatDiv = useRef();
     const chatRef = useRef(chat)
 
@@ -35,6 +36,13 @@ export default function Chat({ username, socket, isMobile }) {
         })
         .catch((err) => console.log(err))
     }, [])
+
+    useEffect(() => {
+        if (chats !== null && firstTime === true) {
+            setFirst(false)
+            socket.emit('send connected friends')
+        }
+    }, [chats])
 
     useEffect(() => {
         socket.on('recieve message', (msg, chatId, senderId) => {
@@ -127,7 +135,7 @@ export default function Chat({ username, socket, isMobile }) {
     useEffect(() => {
         if (chatDiv.current) chatDiv.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
         chatRef.current = chat // for using chat value inside the recieve message socket
-        if (chats) {
+        if (chats && chat !== null) {
             if (chats.all_chats[chat].a_chatter.username === username) {
                 if (chats.all_chats[chat].a_chatter_read_index < chats.all_chats[chat].messages.length - 1) {
                     const temp = {...chats}
@@ -162,8 +170,15 @@ export default function Chat({ username, socket, isMobile }) {
                 <p onClick={handleLogOut} className={styles.logOut}>Log out</p>
             </div>
             <div className={styles.sidebarChat}>
-                <Sidebar chats={chats} setChat={setChat} username={username} setChats={setChats}/>
-                <ChatWindow chat={chat} chats={chats} setChats={setChats} chatDiv={chatDiv} username={username} socket={socket}/>
+                { isMobile ? 
+                    page === 0 ? <Sidebar chats={chats} setChat={setChat} username={username} setChats={setChats} setPage={setPage}/>
+                    : <ChatWindow chat={chat} chats={chats} setChats={setChats} chatDiv={chatDiv} username={username} socket={socket} setPage={setPage} isMobile={isMobile} setChat={setChat}/>
+                    : <>
+                    <Sidebar chats={chats} setChat={setChat} username={username} setChats={setChats} setPage={setPage}/>
+                    <ChatWindow chat={chat} chats={chats} setChats={setChats} chatDiv={chatDiv} username={username} 
+                    socket={socket} setPage={setPage} isMobile={isMobile} setChat={setChat}/>
+                    </>
+                }
             </div>
         </div>
     )

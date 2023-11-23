@@ -3,16 +3,12 @@ import saved from '../assets/saved.svg'
 import send from "../assets/send.svg"
 import { useState, useEffect } from 'react'
 import styles from '../styles/ChatWindow.module.css'
+import back from '../assets/go-back.svg'
 
-export default function ChatWindow({ chats, chat, setChats, chatDiv, username, socket }) {
+export default function ChatWindow({ chats, chat, setChats, setChat, chatDiv, username, socket, setPage, isMobile}) {
     const [input, setInput] = useState('')
-    const [firstTime, setFirst] = useState(true)
 
     useEffect(() => {
-        if (chats !== null && firstTime === true) {
-            setFirst(false)
-            socket.emit('send connected friends')
-        }
         if (chatDiv.current) chatDiv.current.scrollIntoView({ behavior: 'smooth', block: 'end' })
     },[chats])
 
@@ -113,9 +109,15 @@ export default function ChatWindow({ chats, chat, setChats, chatDiv, username, s
         }
     }
 
+    function goBack() {
+        setPage(0)
+        setChat(null)
+    }
+
     return (
         <div className={styles.chatCont}>
                     <div className={styles.header}>
+                        { isMobile ? <img src={back} alt="" width={32} onClick={goBack}/> : null}
                         {chats && chats.all_chats.length !== 0 ? 
                         <p>{chats.all_chats[chat].a_chatter.username === username ? chats.all_chats[chat].b_chatter.username : chats.all_chats[chat].a_chatter.username}</p> 
                         : null}

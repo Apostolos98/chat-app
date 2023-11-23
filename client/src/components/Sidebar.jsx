@@ -2,13 +2,17 @@ import styles from '../styles/Sidebar.module.css'
 import profile from '../assets/profile.svg'
 import SearchPeople from './SearchPeople'
 
-export default function Sidebar({ chats, setChat, username, setChats }) {
+export default function Sidebar({ chats, setChat, username, setChats, setPage }) {
+    function handleNameClick(index) {
+        setChat(index)
+        setPage(1)
+    }
     return (
         <div className={styles.cont}>
             <SearchPeople chats={chats} setChat={setChat} setChats={setChats} username={username}/>
             <div className={styles.peopleCont}>
                 {chats !== null  && chats.all_chats.length !== 0 ? chats.all_chats.map((chat, index) => {
-                    return  <div onClick={() => setChat(index)} className={styles.personCont}>
+                    return  <div onClick={() => handleNameClick(index)} className={styles.personCont}>
                                 <div className={styles.pictureCont}>
                                     <img src={profile} alt="profile or default picture" width={32} className={styles.profile}/>
                                     <span className={chat.status === 'offline' ? styles.offline : styles.online}></span>

@@ -9,7 +9,7 @@
 .inSearch {
     background-color: inherit;
     border: none;
-    width: 100%;
+    width: 150px;
 }
 
 .inSearch:focus {
@@ -42,4 +42,16 @@
 
 .hide {
     display: none;
+}
+
+@media (max-width: 750px) {
+    .inSearch {
+        width: 275px;
+    }
+}
+
+@media (max-width: 450px) {
+    .inSearch {
+        width: 170px;
+    }
 }
