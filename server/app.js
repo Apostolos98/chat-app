@@ -132,9 +132,9 @@ io.on('connection', (socket) => {
   }
   onConnect()
 
-  socket.onAny((event, ...args) => {
-    console.log(event, args);
-  });
+  //socket.onAny((event, ...args) => {
+    //console.log(event, args);
+  //});
 
   socket.on('send connected friends', async () => {
     const connectedFriends = []
