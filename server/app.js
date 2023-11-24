@@ -1,8 +1,8 @@
-require("dotenv").config()
+require("dotenv").config({ path: '../.env'})
 const express = require("express")
 const path = require("path")
 const passport = require("passport")
-const session = require("express-session")
+const session = require("cookie-session")
 const LocalStrategy = require("passport-local")
 const bcrypt = require("bcryptjs")
 const app = express();
@@ -38,7 +38,14 @@ async function connectDB() {
   }
 }
 
-const sessionMiddleware = session({ secret: process.env.SECRET, resave: false, saveUninitialized: true })
+const sessionMiddleware = session({
+  name: 'session',
+  secret: process.env.SECRET,
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+})
+app.set('trust proxy', 1);
 
 app.use(sessionMiddleware);
 app.use(passport.initialize());

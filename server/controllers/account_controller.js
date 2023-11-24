@@ -17,12 +17,8 @@ exports.account_login = (req, res, next) => {
 }
 
 exports.account_logout = (req, res, next) => {
-    req.logout((err) => {
-      if (err) {
-        return next(err);
-      }
-      return res.redirect("/");
-    });
+    req.logout();
+    res.redirect('/')
   }
 
 exports.account_signup = async (req, res, next) => {
