@@ -8,10 +8,7 @@ export default function SearchPeople ({ chats, setChats, setChat, username}) {
     function handleKeyUp(e) {
         const val = e.target.value
         if (val.length === 0) setResults(null)
-        else if (val.length > 0 && val.length < 3) {
-            setResults([{error: 'type atleast 3 letters'}])
-        }
-        else if (val.length >= 3) {
+        else {
             fetch(`/messages/search-users?search=${val}`)
             .then(res => {
                 if (res.status === 404 ) {

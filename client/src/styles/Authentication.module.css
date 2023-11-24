@@ -80,3 +80,9 @@
     font-style: italic;
     color: rgb(255, 41, 41);
 }
+
+@media (max-width: 450px) {
+    .formCont {
+        padding: 25px;
+    }
+}
