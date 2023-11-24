@@ -86,3 +86,10 @@ p {
     position: absolute;
     right: 0;
 }
+
+
+@media (max-width:750px) {
+    .cont {
+        height: 90%;
+    }
+}

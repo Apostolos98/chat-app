@@ -94,3 +94,10 @@
     cursor: pointer;
     background-color: inherit;
 }
+
+
+@media (max-width:750px) {
+    .chatCont {
+        height: 90%;
+    }   
+}
