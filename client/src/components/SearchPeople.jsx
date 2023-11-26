@@ -45,7 +45,7 @@ export default function SearchPeople ({ chats, setChats, setChat, username}) {
             </form>
             <div className={results ? styles.results : styles.hide}>
                 {results && results.length === 1 && results[0].error !== undefined ? results[0].error : results ? results.map((el) => {
-                    return <p onClick={() => addChatter(el.username)}>{el.username}</p>
+                    return <p onClick={() => addChatter(el.username)} className={styles.resultP}>{el.username}</p>
                 }) : null}
             </div>
         </div>

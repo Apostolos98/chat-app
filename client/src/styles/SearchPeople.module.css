@@ -40,6 +40,10 @@
     border-bottom-right-radius: 10px;
 }
 
+.resultP {
+    cursor: pointer;
+}
+
 .hide {
     display: none;
 }
