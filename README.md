@@ -3,7 +3,8 @@
 ## ⚠️ Warnings:
 1. **Inactive State Delay**: Using Render's free tier, the site may initially be in an inactive state, so it may take about 15 seconds to start.
 2. **Websocket Inactivity**: Render will inactivate websocket connections in 5 minutes for the free tier. A page reload is needed if a user stays longer than that.
-3. **Site in development**: The website and the codebase is in development
+3. **Testing the site**: In order to test the functionality with two different accounts I recommend opening a window in incognito and another one in normal mode 
+4. **Site in development**: The website and the codebase is in development
 
 ## 🛠️ Built With:
 - React

@@ -48,7 +48,9 @@ function App() {
 
   return (
     <>
-      {loggedIn?<Chat username={username} socket={socket} isMobile={isMobile}/>:<Authentication setLogged={setLogged} setUsername={setUsername}/>}
+      {loggedIn ? 
+      <Chat username={username} socket={socket} isMobile={isMobile} setLogged={setLogged}/> : 
+      <Authentication setLogged={setLogged} setUsername={setUsername}/>}
     </>
   )
 }

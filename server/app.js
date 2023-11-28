@@ -112,6 +112,11 @@ io.use((socket, next) => {
 
 
 io.on('connection', (socket) => {
+
+   // socket.onAny((event, ...args) => {
+    //console.log(event, args);
+  //});
+  
   const socketStringId = socket.request.user._id.toString()
   socket.join(socketStringId)
 
@@ -132,9 +137,12 @@ io.on('connection', (socket) => {
   }
   onConnect()
 
-  //socket.onAny((event, ...args) => {
-    //console.log(event, args);
-  //});
+  socket.on('user logged out', async (username) => {
+    const user = await User.findOne({ username: username }).exec()
+    if (user) {
+      socket.to(user._id.toString()).emit('user logged out')
+    }
+  })
 
   socket.on('send connected friends', async () => {
     const connectedFriends = []

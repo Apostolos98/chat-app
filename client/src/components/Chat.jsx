@@ -4,7 +4,7 @@ import ChatWindow from "./ChatWindow";
 import styles from "../styles/Chat.module.css"
 import { produce } from 'immer'
 
-export default function Chat({ username, socket, isMobile }) {
+export default function Chat({ username, socket, isMobile, setLogged}) {
     const [chats, setChats] = useState(null)
     const [chat, setChat] = useState(isMobile ? null : 0)
     const [page, setPage] = useState(0) // for mobile
@@ -123,6 +123,12 @@ export default function Chat({ username, socket, isMobile }) {
             })
         })
 
+        socket.on('user logged out', () => {
+            console.log(1)
+            setLogged(false)
+            socket.disconnect()
+        })
+
         return () => {
             socket.off('recieve message')
             socket.off('user connected')
@@ -156,6 +162,7 @@ export default function Chat({ username, socket, isMobile }) {
     }, [chat])
 
     function handleLogOut() {
+        socket.emit('user logged out', username)
         fetch('/account/log-out')
         .then(res => {
             if (res.ok) window.location.reload();
