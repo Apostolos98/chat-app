@@ -19,6 +19,7 @@ export default function Chat({ username, socket, isMobile, setLogged}) {
             for (let [ind, singleChat] of data.all_chats.entries()) {
                 singleChat.status = 'offline'
                 singleChat.saved = 'ok'
+                // since when on desktop chat will not be null and there will be a chat window we declare the chat as read
                 if (singleChat.a_chatter.username === username) {
                     if (ind === chat && singleChat.a_chatter_read_index < singleChat.messages.length - 1) {
                         singleChat.a_chatter_read_index = singleChat.messages.length - 1
